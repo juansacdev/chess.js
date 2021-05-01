@@ -1,0 +1,26 @@
+{
+  "name": "chess",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juansacok/chess.js.git"
+  },
+  "author": "Juan Sebastián Agudelo @juansacok <juansac.me@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/juansacok/chess.js/issues"
+  },
+  "homepage": "https://github.com/juansacok/chess.js#readme",
+  "devDependencies": {
+    "html-webpack-plugin": "^5.3.1",
+    "nodemon": "^2.0.7",
+    "webpack": "^5.36.2",
+    "webpack-cli": "^4.6.0",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
