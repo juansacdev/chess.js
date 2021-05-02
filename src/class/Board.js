@@ -1,4 +1,3 @@
-// const Cell = require('./Cell')
 import Cell from './Cell'
 import { cellSelectedTheme } from './../theme'
 import Piece from './Piece'
@@ -10,7 +9,8 @@ class Board {
     canvas
     contextCanvas
     matriz = [new Cell()]
-	selectedCellPosition = []
+	previousCell = new Cell()
+	allSelectedCells = [new Cell()]
 
     constructor(
 		width,
@@ -30,7 +30,8 @@ class Board {
         this.CELL_WIDTH = this.width / this.columns;
         this.CELL_HEIGHT = this.height / this.files;
 
-		this.selectedCellPosition = null
+		this.previousCell = null
+		this.allSelectedCells = []
 
         this.canvas = document.createElement("canvas");
         this.contextCanvas = this.canvas.getContext("2d");
@@ -55,19 +56,67 @@ class Board {
 		}
 
 		// Bind Methods
-		this.setMouseCell = this.setMouseCell.bind(this)
 		this.setSelectedCell = this.setSelectedCell.bind(this)
+		this.setMouseCell = this.setMouseCell.bind(this)
+		this.pickPiece = this.pickPiece.bind(this)
+		this.dragPiece = this.dragPiece.bind(this)
+		this.dropPiece = this.dropPiece.bind(this)
 
-		// // Mouse Events
-		this.canvas.addEventListener('mousemove', this.setMouseCell)
-
-		this.canvas.addEventListener('mousedown', this.setSelectedCell)
-
-		this.canvas.addEventListener('mouseup', () => {
-			console.log('Drop')
-		})
+		// Mouse Events
+		this.canvas.addEventListener('mousemove', this.dragPiece)
+		this.canvas.addEventListener('mousedown', this.pickPiece)
+		this.canvas.addEventListener('mouseup', this.dropPiece)
 
     }
+
+	clearSelections() {
+		this.allSelectedCells.forEach(cell => cell.setSelected(false))
+	}
+
+	pickPiece(event) {
+		this.clearSelections()
+		if (this.previousCell){
+			return
+		}
+
+		const { layerX, layerY } = event
+		const [file, column] = this.mouseCoordinateToCell(layerX, layerY)
+		const selectedCell = this.matriz[file][column]
+
+		if (!selectedCell.piece) {
+			return
+		}
+
+		this.previousCell = selectedCell
+		this.allSelectedCells.push(selectedCell)
+		selectedCell.setSelected(true)
+
+		this.renderBoard()
+	}
+
+	// TODO
+	dragPiece(event) {
+
+	}
+
+	dropPiece(event) {
+		if (!this.previousCell){
+			return
+		}
+
+		const { layerX, layerY } = event
+		const [file, column] = this.mouseCoordinateToCell(layerX, layerY)
+		const selectedCell = this.matriz[file][column]
+
+		selectedCell.setPiece(this.previousCell.piece)
+		this.allSelectedCells.push(selectedCell)
+
+		this.previousCell.setPiece(null)
+		this.previousCell = null
+		selectedCell.setSelected(true)
+
+		this.renderBoard()
+	}
 
 	mouseCoordinateToCell(x, y) {
 		const file = Math.floor(x / this.CELL_WIDTH)
@@ -95,7 +144,6 @@ class Board {
 	initPlacePiece(x, y, piece) {
 		const cell = this.matriz[x][y]
 		cell.setPiece(piece)
-		// this.matriz[x][y] = new Cell(piece)
 	}
 
 	renderBoard() {
@@ -116,7 +164,8 @@ class Board {
 					this.CELL_WIDTH,
 					this.CELL_HEIGHT,
 				);
-				// Coordenadas
+
+				// Coordinates
 				this.contextCanvas.fillStyle = textColor;
 				this.contextCanvas.textBaseline = "top";
 				this.contextCanvas.textAlign = "start";
@@ -127,8 +176,8 @@ class Board {
 				const cell = this.matriz[x][y]
 
 				if (cell.selected) {
-					this.contextCanvas.strokeStyle = cellSelectedTheme.isSelected;
-					this.contextCanvas.strokeRect(
+					this.contextCanvas.fillStyle = cellSelectedTheme.isSelected;
+					this.contextCanvas.fillRect(
 						x * this.CELL_WIDTH,
 						y * this.CELL_HEIGHT,
 						this.CELL_WIDTH,
