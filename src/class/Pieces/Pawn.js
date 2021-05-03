@@ -25,15 +25,13 @@ class Pawn extends Piece {
             const takeCell = this.getCellFromCoords(
                 [
                     // Valor X
-                    (x + (i ? 1 : -1)) === 8 ? 6 // Limite derecho
-                    : (x + (i ? 1 : -1)) === -1 ? 1 // Limite izq
-                    : (x + (i ? 1 : -1)),
+                    (x + (i ? 1 : -1)),
                     // Valor Y
                     (y + (1 * positionY))
                 ],
                 matriz
             )
-            if (takeCell.piece && takeCell.piece.color !== this.color) {
+            if (takeCell && takeCell.piece && takeCell.piece.color !== this.color) {
                 takeCell.setAvalibeMove(true)
             }
         }
