@@ -3,15 +3,6 @@ import { cellSelectedTheme } from '../utils/theme'
 import Piece from './Piece'
 
 class Board {
-
-    CELL_WIDTH
-    CELL_HEIGHT
-    canvas
-    contextCanvas
-    matriz = [new Cell()]
-	previousCell = new Cell()
-	allSelectedCells = [new Cell()]
-
     constructor(
 		width,
 		height,
@@ -32,6 +23,7 @@ class Board {
 
 		this.previousCell = null
 		this.allSelectedCells = []
+		this.matriz = [];
 
         this.canvas = document.createElement("canvas");
         this.contextCanvas = this.canvas.getContext("2d");
@@ -82,9 +74,9 @@ class Board {
 		})
 	}
 
-
 	pickPiece(event) {
 		this.clearSelections()
+		this.clearAvalibleMove()
 		if (this.previousCell){
 			return
 		}
@@ -139,6 +131,7 @@ class Board {
 		selectedCell.setPiece(this.previousCell.piece)
 		this.allSelectedCells.push(selectedCell)
 
+		this.previousCell.piece.moved = true
 		this.previousCell.setPiece(null)
 		this.previousCell = null
 		selectedCell.setSelected(true)

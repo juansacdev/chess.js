@@ -3,6 +3,7 @@ class Piece {
         this.color = color
         this.type = type
         this.imgPiece = imgPiece
+        this.moved = false
     }
 
     getCellFromCoords(position, matriz) {

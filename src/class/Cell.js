@@ -1,6 +1,4 @@
 class Cell {
-    selected
-    avalibleMove
     constructor(piece) {
         this.selected = false
         this.avalibleMove = false
