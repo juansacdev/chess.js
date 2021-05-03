@@ -24,10 +24,8 @@ class Pawn extends Piece {
         for (let i = 0; i < 2; i++) {
             const takeCell = this.getCellFromCoords(
                 [
-                    // Valor X
-                    (x + (i ? 1 : -1)),
-                    // Valor Y
-                    (y + (1 * positionY))
+                    (x + (i ? 1 : -1)), // Valor X
+                    (y + (1 * positionY)) // Valor Y
                 ],
                 matriz
             )
