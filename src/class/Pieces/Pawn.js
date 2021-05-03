@@ -9,17 +9,28 @@ class Pawn extends Piece {
 
     avalibleMovements(position, matriz) {
         const [x, y] = position
-        const valueY = this.color === pieceTheme.pieceDark ? 1 : -1
+
+        // 1 = negras | -1 = blancas
+        const positionY = this.color === pieceTheme.pieceDark ? 1 : -1
+
+        // Primer movimiento
         for (let i = 1; i <= (this.moved ? 1 : 2); i++) {
-            const cell = this.getCellFromCoords([x, y + (i *  valueY)], matriz)
+            const cell = this.getCellFromCoords([x, y + (i *  positionY)], matriz)
             if (cell.piece) break
             cell.setAvalibeMove(true)
         }
 
-        // Movimiento diagonal pa comer
+        // Movimiento diagonal pa' comer
         for (let i = 0; i < 2; i++) {
             const takeCell = this.getCellFromCoords(
-                [(x + (i ? 1 : -1)), (y + (1 *  valueY))],
+                [
+                    // Valor X
+                    (x + (i ? 1 : -1)) === 8 ? 6 // Limite derecho
+                    : (x + (i ? 1 : -1)) === -1 ? 1 // Limite izq
+                    : (x + (i ? 1 : -1)),
+                    // Valor Y
+                    (y + (1 * positionY))
+                ],
                 matriz
             )
             if (takeCell.piece && takeCell.piece.color !== this.color) {
