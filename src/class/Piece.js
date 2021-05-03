@@ -6,6 +6,21 @@ class Piece {
         this.moved = false
     }
 
+    // Torre - Reina - Alfil
+    checkDirection(position, direction, matriz) {
+        const [x, y] = position
+        const [dirX, dirY] = direction
+
+        for (let i = 1; i <= matriz.length; i++) {
+            const cell = this.getCellFromCoords([x + (i * dirX), y + (i * dirY)], matriz)
+
+            if (!cell) break
+            if (cell.piece && cell.piece.color === this.color) break
+            cell.setAvalibeMove(true)
+            if (cell.piece) break
+        }
+    }
+
     getCellFromCoords(position, matriz) {
         const [x, y] = position
         const column = matriz[x] || []
