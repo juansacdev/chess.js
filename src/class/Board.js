@@ -1,5 +1,5 @@
 import Cell from './Cell'
-import { cellSelectedTheme } from './../theme'
+import { cellSelectedTheme } from '../utils/theme'
 import Piece from './Piece'
 
 class Board {
@@ -51,7 +51,7 @@ class Board {
 		for (let x = 0; x < this.files ; x++) {
 			this.matriz[x] = [];
 			for (let y = 0; y < this.columns; y++) {
-				this.matriz[x][y] = new Cell();
+				this.matriz[x][y] = new Cell;
 			}
 		}
 
@@ -71,7 +71,17 @@ class Board {
 
 	clearSelections() {
 		this.allSelectedCells.forEach(cell => cell.setSelected(false))
+		this.allSelectedCells = []
 	}
+
+	clearAvalibleMove() {
+		this.matriz.forEach((column) => {
+			column.forEach((cell) => {
+				cell.setAvalibeMove(false)
+			})
+		})
+	}
+
 
 	pickPiece(event) {
 		this.clearSelections()
@@ -80,12 +90,15 @@ class Board {
 		}
 
 		const { layerX, layerY } = event
-		const [file, column] = this.mouseCoordinateToCell(layerX, layerY)
-		const selectedCell = this.matriz[file][column]
+		const [column, file] = this.mouseCoordinateToCell(layerX, layerY)
+		const selectedCell = this.matriz[column][file]
 
 		if (!selectedCell.piece) {
 			return
 		}
+
+		console.log(this.matriz);
+		selectedCell.piece.avalibleMovements([column, file], this.matriz)
 
 		this.previousCell = selectedCell
 		this.allSelectedCells.push(selectedCell)
@@ -94,7 +107,7 @@ class Board {
 		this.renderBoard()
 	}
 
-	// TODO
+	// ! TODO
 	dragPiece(event) {
 
 	}
@@ -108,6 +121,21 @@ class Board {
 		const [file, column] = this.mouseCoordinateToCell(layerX, layerY)
 		const selectedCell = this.matriz[file][column]
 
+		// Previene que se mueva en la misma coordenada
+		if (this.previousCell === selectedCell){
+			this.previousCell = null
+			this.clearSelections()
+			this.renderBoard()
+			return
+		}
+
+		// Evita un movimiento que no es valido
+		if (!selectedCell.avalibleMove){
+			this.previousCell = null
+			this.renderBoard()
+			return
+		}
+
 		selectedCell.setPiece(this.previousCell.piece)
 		this.allSelectedCells.push(selectedCell)
 
@@ -115,6 +143,7 @@ class Board {
 		this.previousCell = null
 		selectedCell.setSelected(true)
 
+		this.clearAvalibleMove()
 		this.renderBoard()
 	}
 
@@ -147,8 +176,8 @@ class Board {
 	}
 
 	renderBoard() {
-		for (let x = 0; x < this.files; x++) {
-			for (let y = 0; y < this.columns; y++) {
+		for (let x = 0; x < this.columns; x++) {
+			for (let y = 0; y < this.files; y++) {
 				// Cell Even
 				let cellColor = this.theme.boardLight;
 				let textColor = this.theme.boardDark;
@@ -185,6 +214,21 @@ class Board {
 					);
 				}
 
+				if (cell.avalibleMove) {
+					this.contextCanvas.fillStyle = cellSelectedTheme.isavalible;
+					this.contextCanvas.globalAlpha = 0.5
+					this.contextCanvas.beginPath()
+					this.contextCanvas.arc(
+						(x * this.CELL_WIDTH) + (this.CELL_WIDTH / 2),
+						(y * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2),
+						30,
+						0,
+						2 * Math.PI
+					)
+					this.contextCanvas.fill()
+					this.contextCanvas.globalAlpha = 1
+				}
+
 				// Piece
 				const piece = cell?.piece
 				if (piece) {
@@ -192,9 +236,9 @@ class Board {
 					this.contextCanvas.textBaseline = "middle";
 					this.contextCanvas.textAlign = "center";
 					this.contextCanvas.font = '66px Arial'
-					this.contextCanvas.fillText(piece.type[0], ((x * this.CELL_WIDTH) + (this.CELL_WIDTH / 2)), ((y * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2)));
+					this.contextCanvas.fillText(piece.imgPiece[0], ((x * this.CELL_WIDTH) + (this.CELL_WIDTH / 2)), ((y * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2)));
 					this.contextCanvas.fillStyle = this.pieceTheme.pieceDark;
-					this.contextCanvas.fillText(piece.type[1], ((x * this.CELL_WIDTH) + (this.CELL_WIDTH / 2)), ((y * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2)));
+					this.contextCanvas.fillText(piece.imgPiece[1], ((x * this.CELL_WIDTH) + (this.CELL_WIDTH / 2)), ((y * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2)));
 				}
 			}
 		}
