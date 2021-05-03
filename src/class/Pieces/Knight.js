@@ -22,7 +22,7 @@ class Knight extends Piece {
 
         possibleMovements.forEach(mv => {
             const cell = this.getCellFromCoords(mv, matriz)
-            if (cell && !(cell.piece && cell.piece.color === this.color)) {
+            if (this.checkValidCell(cell)) {
                 cell.setAvalibeMove(true)
             }
         })

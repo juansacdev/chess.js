@@ -24,10 +24,42 @@ class King extends Piece {
             const [dirX, dirY] = mv
             const cell = this.getCellFromCoords([x + (1 * dirX), y + (1 * dirY)], matriz)
 
-            if (cell && !(cell.piece && cell.piece.color === this.color)) {
+            if (this.checkValidCell(cell)) {
                 cell.setAvalibeMove(true)
             }
         })
+
+        if (this.moved) return
+
+        // Enroque right side
+        const cellOneRightToCastling = this.getCellFromCoords([x + 1, y], matriz)
+        const cellTwoRightToCastling = this.getCellFromCoords([x + 2, y], matriz)
+        const cellRightToCastlingRook = this.getCellFromCoords([x + 3, y], matriz)
+        if (
+            !cellOneRightToCastling.piece
+            && !cellTwoRightToCastling.piece
+            && cellRightToCastlingRook.piece
+            && cellRightToCastlingRook.piece.type === pieceTypes.rook
+            && !cellRightToCastlingRook.piece.moved
+        ) {
+            cellTwoRightToCastling.setAvalibeMove(true)
+        }
+
+        // Enroque left side
+        const cellOneLeftToCastling = this.getCellFromCoords([x - 1, y], matriz)
+        const cellTwoLeftToCastling = this.getCellFromCoords([x - 2, y], matriz)
+        const cellThreeToCastlingRook = this.getCellFromCoords([x - 3, y], matriz)
+        const cellLeftToCastlingRook = this.getCellFromCoords([x - 4, y], matriz)
+        if (
+            !cellOneLeftToCastling.piece
+            && !cellTwoLeftToCastling.piece
+            && !cellThreeToCastlingRook.piece
+            && cellLeftToCastlingRook.piece
+            && cellLeftToCastlingRook.piece.type === pieceTypes.rook
+            && !cellLeftToCastlingRook.piece.moved
+        ) {
+            cellTwoLeftToCastling.setAvalibeMove(true)
+        }
     }
 }
 

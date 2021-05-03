@@ -6,6 +6,10 @@ class Piece {
         this.moved = false
     }
 
+    checkValidCell(cell) {
+        return cell && !(cell.piece && cell.piece.color === this.color)
+    }
+
     // Torre - Reina - Alfil
     checkDirection(position, direction, matriz) {
         const [x, y] = position
