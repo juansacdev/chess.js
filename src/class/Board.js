@@ -206,12 +206,14 @@ class Board {
 
 				if (cell.selected) {
 					this.contextCanvas.fillStyle = cellSelectedTheme.isSelected;
+					this.contextCanvas.globalAlpha = 0.4
 					this.contextCanvas.fillRect(
 						x * this.CELL_WIDTH,
 						y * this.CELL_HEIGHT,
 						this.CELL_WIDTH,
 						this.CELL_HEIGHT,
 					);
+					this.contextCanvas.globalAlpha = 1
 				}
 
 				if (cell.avalibleMove) {

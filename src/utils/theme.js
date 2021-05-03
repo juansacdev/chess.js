@@ -9,6 +9,6 @@ exports.theme = {
 }
 
 exports.cellSelectedTheme = {
-	isSelected: '#FFF4AE',
+	isSelected: '#FFE43A',
 	isavalible: '#FF0000',
 }
