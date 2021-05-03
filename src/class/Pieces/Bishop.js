@@ -6,45 +6,33 @@ class Bishop extends Piece {
         super(color, pieceTypes.bishop, ['♝', '♗'])
     }
 
-    avalibleMovements(position, matriz) {
+    checkDiagonal(position, movement, matriz) {
         const [x, y] = position
+        const [movX, movY] = movement
 
-        // Down right
         for (let i = 1; i <= matriz.length; i++) {
-            const cell = this.getCellFromCoords([x + i, y + i], matriz)
+            const cell = this.getCellFromCoords([x + (i * movX), y + (i * movY)], matriz)
 
             if (!cell) break
+            if (cell.piece && cell.piece.color === this.color) break
             cell.setAvalibeMove(true)
             if (cell.piece) break
         }
+    }
+
+    avalibleMovements(position, matriz) {
+        // Down right
+        this.checkDiagonal(position, [1, 1], matriz)
 
         // Down left
-        for (let i = 1; i <= matriz.length; i++) {
-            const cell = this.getCellFromCoords([x - i, y + i], matriz)
-
-            if (!cell) break
-            cell.setAvalibeMove(true)
-            if (cell.piece) break
-        }
+        this.checkDiagonal(position, [-1, 1], matriz)
 
         // Up right
-        for (let i = 1; i <= matriz.length; i++) {
-            const cell = this.getCellFromCoords([x + i, y - i], matriz)
-
-            if (!cell) break
-            cell.setAvalibeMove(true)
-            if (cell.piece) break
-
-        }
+        this.checkDiagonal(position, [1, -1], matriz)
 
         // Up left
-        for (let i = 1; i <= matriz.length; i++) {
-            const cell = this.getCellFromCoords([x - i, y - i], matriz)
+        this.checkDiagonal(position, [-1, -1], matriz)
 
-            if (!cell) break
-            cell.setAvalibeMove(true)
-            if (cell.piece) break
-        }
     }
 }
 
