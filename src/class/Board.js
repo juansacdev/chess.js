@@ -1,5 +1,5 @@
 import Cell from './Cell'
-import { cellSelectedTheme } from '../utils/theme'
+import { cellSelectedTheme, pieceTheme } from '../utils/theme'
 import { pieceTypes } from '../utils/piecesType'
 import socket from '../helpers/sockets'
 
@@ -27,6 +27,9 @@ class Board {
 		this.allSelectedCells = []
 		this.matriz = [];
 
+		this.disable = true
+		this.isBlack = false
+
         this.canvas = document.createElement("canvas");
         this.contextCanvas = this.canvas.getContext("2d");
 
@@ -52,17 +55,19 @@ class Board {
 		// Bind Methods
 		this.setSelectedCell = this.setSelectedCell.bind(this)
 		this.pickPiece = this.pickPiece.bind(this)
-		this.dragPiece = this.dragPiece.bind(this)
 		this.dropPiece = this.dropPiece.bind(this)
 		this.onSocketMove = this.onSocketMove.bind(this)
+		this.onSocketWhiteTurn = this.onSocketWhiteTurn.bind(this)
+		this.onSocketBlackTurn = this.onSocketBlackTurn.bind(this)
 
 		// Mouse Events
-		this.canvas.addEventListener('mousemove', this.dragPiece)
 		this.canvas.addEventListener('mousedown', this.pickPiece)
 		this.canvas.addEventListener('mouseup', this.dropPiece)
 
 		// Socket Events
 		socket.on('move', this.onSocketMove)
+		socket.on('white Turn', this.onSocketWhiteTurn)
+		socket.on('black Turn', this.onSocketBlackTurn)
     }
 
 	onSocketMove([prev, next]) {
@@ -80,7 +85,20 @@ class Board {
 		this.previousCell = null
 		selectedCell.setSelected(true)
 
+		this.disable = true
+
+		// this.flip = !this.flip
+
 		this.clearAvalibleMove()
+		this.renderBoard()
+	}
+
+	onSocketWhiteTurn() {
+		this.disable = false
+	}
+
+	onSocketBlackTurn() {
+		this.isBlack = true
 		this.renderBoard()
 	}
 
@@ -98,19 +116,18 @@ class Board {
 	}
 
 	pickPiece(event) {
+		if (this.disable) return
 		this.clearSelections()
 		this.clearAvalibleMove()
-		if (this.previousCell){
-			return
-		}
+		if (this.previousCell) return
 
 		const { layerX, layerY } = event
 		const [column, file] = this.mouseCoordinateToCell(layerX, layerY)
 		const selectedCell = this.matriz[column][file]
 
-		if (!selectedCell.piece) {
-			return
-		}
+		if (!selectedCell.piece) return
+		if (this.isBlack && selectedCell.piece.color === pieceTheme.pieceLight) return
+		if (!this.isBlack && selectedCell.piece.color === pieceTheme.pieceDark) return
 
 		console.log(this.matriz);
 		selectedCell.piece.avalibleMovements([column, file], this.matriz)
@@ -121,11 +138,6 @@ class Board {
 		selectedCell.setSelected(true)
 
 		this.renderBoard()
-	}
-
-	// ! TODO
-	dragPiece(event) {
-
 	}
 
 	dropPiece(event) {
@@ -165,8 +177,14 @@ class Board {
 	}
 
 	mouseCoordinateToCell(x, y) {
-		const file = Math.floor(x / this.CELL_WIDTH)
-		const column = Math.floor(y / this.CELL_HEIGHT)
+		let file = Math.floor(x / this.CELL_WIDTH)
+		let column = Math.floor(y / this.CELL_HEIGHT)
+
+		if (this.isBlack) {
+			file = this.files - 1 - file
+			column = this.columns - 1 - column
+		}
+
 		return [file, column]
 	}
 
@@ -186,28 +204,44 @@ class Board {
 	renderBoard() {
 		for (let x = 0; x < this.columns; x++) {
 			for (let y = 0; y < this.files; y++) {
+				let drawX = x
+				let drawY = y
+
+				if (this.isBlack) {
+					drawX = this.files - 1 - drawX
+					drawY = this.columns - 1 - drawY
+				}
+
 				// Cell Even
 				let cellColor = this.theme.boardLight;
 				let textColor = this.theme.boardDark;
-				if ((x + y) % 2) {
+				if ((drawX + drawY) % 2) {
 					// Cell Odd
 					cellColor = this.theme.boardDark;
 					textColor = this.theme.boardLight;
 				}
 				this.contextCanvas.fillStyle = cellColor;
 				this.contextCanvas.fillRect(
-					x * this.CELL_WIDTH,
-					y * this.CELL_HEIGHT,
+					drawX * this.CELL_WIDTH,
+					drawY * this.CELL_HEIGHT,
 					this.CELL_WIDTH,
 					this.CELL_HEIGHT,
 				);
+
+				const coordinateColumns = [
+					'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+				]
+
+				const coordinateFiles = [
+					8, 7, 6, 5, 4, 3, 2, 1,
+				]
 
 				// Coordinates
 				this.contextCanvas.fillStyle = textColor;
 				this.contextCanvas.textBaseline = "top";
 				this.contextCanvas.textAlign = "start";
 				this.contextCanvas.font = '10px Arial'
-				this.contextCanvas.fillText(`[${x};${y}]`, ((x * this.CELL_WIDTH) + 10), ((y * this.CELL_HEIGHT) + 10));
+				this.contextCanvas.fillText(`[${coordinateColumns[x]};${coordinateFiles[y]}]`, ((drawX * this.CELL_WIDTH) + 10), ((drawY * this.CELL_HEIGHT) + 10));
 
 				// Cell
 				const cell = this.matriz[x][y]
@@ -216,8 +250,8 @@ class Board {
 					this.contextCanvas.fillStyle = cellSelectedTheme.isSelected;
 					this.contextCanvas.globalAlpha = 0.4
 					this.contextCanvas.fillRect(
-						x * this.CELL_WIDTH,
-						y * this.CELL_HEIGHT,
+						drawX * this.CELL_WIDTH,
+						drawY * this.CELL_HEIGHT,
 						this.CELL_WIDTH,
 						this.CELL_HEIGHT,
 					);
@@ -229,8 +263,8 @@ class Board {
 					this.contextCanvas.globalAlpha = 0.5
 					this.contextCanvas.beginPath()
 					this.contextCanvas.arc(
-						(x * this.CELL_WIDTH) + (this.CELL_WIDTH / 2),
-						(y * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2),
+						(drawX * this.CELL_WIDTH) + (this.CELL_WIDTH / 2),
+						(drawY * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2),
 						30,
 						0,
 						2 * Math.PI
@@ -246,9 +280,9 @@ class Board {
 					this.contextCanvas.textBaseline = "middle";
 					this.contextCanvas.textAlign = "center";
 					this.contextCanvas.font = '66px Arial'
-					this.contextCanvas.fillText(piece.imgPiece[0], ((x * this.CELL_WIDTH) + (this.CELL_WIDTH / 2)), ((y * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2)));
+					this.contextCanvas.fillText(piece.imgPiece[0], ((drawX * this.CELL_WIDTH) + (this.CELL_WIDTH / 2)), ((drawY * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2)));
 					this.contextCanvas.fillStyle = this.pieceTheme.pieceDark;
-					this.contextCanvas.fillText(piece.imgPiece[1], ((x * this.CELL_WIDTH) + (this.CELL_WIDTH / 2)), ((y * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2)));
+					this.contextCanvas.fillText(piece.imgPiece[1], ((drawX * this.CELL_WIDTH) + (this.CELL_WIDTH / 2)), ((drawY * this.CELL_HEIGHT) + (this.CELL_HEIGHT / 2)));
 				}
 			}
 		}
