@@ -39,7 +39,7 @@ npm build
 
 ## How to use
 Para unirse o crear una sala solo debes de escribir en la url un Query Param pasandole un id.
-https://chess-js-app.vercel.app/?room=${id}
+> /?room=${id}
 
 
 ## Author
