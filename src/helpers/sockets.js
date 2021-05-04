@@ -1,9 +1,11 @@
 import { io } from "socket.io-client";
 
-// Sockets
+export const roomId = window.location.search.split('room=')[1]
+
 const socket = io('http://localhost:5000')
-    socket.on('connected', data => {
-	console.log({ data })
+
+socket.on('connected', () => {
+    socket.emit('join room', roomId)
 })
 
 export default socket
