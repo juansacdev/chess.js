@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack --mode production",
+    "build:dev": "webpack --mode development",
+    "start": "webpack-dev-server --mode development --open"
   },
   "repository": {
     "type": "git",
@@ -16,11 +18,16 @@
     "url": "https://github.com/juansacok/chess.js/issues"
   },
   "homepage": "https://github.com/juansacok/chess.js#readme",
-  "devDependencies": {
+  "dependencies": {
+    "@babel/core": "^7.14.0",
+    "@babel/polyfill": "^7.12.1",
+    "@babel/preset-env": "^7.14.0",
+    "babel-loader": "^8.2.2",
+    "socket.io-client": "^4.0.1",
     "html-webpack-plugin": "^5.3.1",
     "nodemon": "^2.0.7",
     "webpack": "^5.36.2",
     "webpack-cli": "^4.6.0",
-    "webpack-dev-server": "^3.11.0"
+    "webpack-dev-server": "^3.11.2"
   }
 }

@@ -1,6 +1,7 @@
 import Cell from './Cell'
 import { cellSelectedTheme } from '../utils/theme'
-import Piece from './Piece'
+import { pieceTypes } from '../utils/piecesType'
+import socket from '../helpers/sockets'
 
 class Board {
     constructor(
@@ -128,6 +129,15 @@ class Board {
 			return
 		}
 
+		// Enroque
+		let kingPiece
+		if (this.previousCell.piece.type === pieceTypes.king) {
+			kingPiece = this.previousCell.piece
+			if (!kingPiece.moved || kingPiece.isCastling([file, column])) {
+				kingPiece.castling([file, column], this.matriz)
+			}
+		}
+
 		selectedCell.setPiece(this.previousCell.piece)
 		this.allSelectedCells.push(selectedCell)
 
@@ -137,6 +147,8 @@ class Board {
 		selectedCell.setSelected(true)
 
 		this.clearAvalibleMove()
+
+		socket.emit('test')
 		this.renderBoard()
 	}
 
