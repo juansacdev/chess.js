@@ -5,7 +5,9 @@ import Knight from './class/Pieces/Knight';
 import Bishop from './class/Pieces/Bishop';
 import Queen from './class/Pieces/Queen';
 import King from './class/Pieces/King';
+import { pieceTypes } from './utils/piecesType'
 import { theme, pieceTheme } from './utils/theme'
+import socket from './helpers/sockets'
 
 const COLUMNS = 8;
 const FILES = 8;
@@ -15,24 +17,22 @@ const HEIGHT = 800;
 
 const board = new Board (WIDTH, HEIGHT, COLUMNS, FILES, theme, pieceTheme)
 
-// Set all pieces
-for (let x = 0; x < FILES; x++) {
-	// Black pawns
-	board.initPlacePiece(x, 1, new Pawn(pieceTheme.pieceDark))
-	// White pawns
-	board.initPlacePiece(x, 6, new Pawn(pieceTheme.pieceLight))
-}
+socket.on('init board', (serverPeices) => {
+	serverPeices.forEach((file, y) => {
+		file.forEach((currentPiece, x) => {
+			if (!currentPiece) return
+			const [colorType, pieceType = ''] = currentPiece.split('')
+			const color = colorType === 'b' ? pieceTheme.pieceDark : pieceTheme.pieceLight
+			let piece
+			if (pieceType === pieceTypes.pawn) piece = new Pawn(color)
+			if (pieceType === pieceTypes.rook) piece = new Rook(color)
+			if (pieceType === pieceTypes.king) piece = new King(color)
+			if (pieceType === pieceTypes.queen) piece = new Queen(color)
+			if (pieceType === pieceTypes.knight) piece = new Knight(color)
+			if (pieceType === pieceTypes.bishop) piece = new Bishop(color)
 
-for (let x = 0; x < 2; x++) {
-	board.initPlacePiece(0, (x * 7), new Rook(x ? pieceTheme.pieceLight : pieceTheme.pieceDark))
-	board.initPlacePiece(1, (x * 7), new Knight(x ? pieceTheme.pieceLight : pieceTheme.pieceDark))
-	board.initPlacePiece(2, (x * 7), new Bishop(x ? pieceTheme.pieceLight : pieceTheme.pieceDark))
-	board.initPlacePiece(3, (x * 7), new Queen(x ? pieceTheme.pieceLight : pieceTheme.pieceDark))
-	board.initPlacePiece(4, (x * 7), new King(x ? pieceTheme.pieceLight : pieceTheme.pieceDark))
-	board.initPlacePiece(5, (x * 7), new Bishop(x ? pieceTheme.pieceLight : pieceTheme.pieceDark))
-	board.initPlacePiece(6, (x * 7), new Knight(x ? pieceTheme.pieceLight : pieceTheme.pieceDark))
-	board.initPlacePiece(7, (x * 7), new Rook( x ? pieceTheme.pieceLight : pieceTheme.pieceDark))
-}
-
-board.renderBoard()
-
+			board.initPlacePiece(x, y, piece)
+		})
+	})
+	board.renderBoard()
+})
