@@ -4,9 +4,95 @@
 		<meta charset="UTF-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Chess.js</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
+		<title>Chess.js</title>
+		<style>
+			#gameScreen {
+				display: none;
+			}
+			#roomFull {
+				display: none;
+			}
+			#roomInfo {
+				display: none;
+			}
+			#me {
+				place-self: end;
+				justify-self: center;
+			}
+			body {
+				color: white;
+			}
+		</style>
 	</head>
 	<body>
+		<section>
+			<div id="initialScreen">
+				<div class="d-flex flex-column align-items-center justify-content-center h-100">
+					<h1>Multiplayer Chess Game</h1>
+					<br>
+					<button
+						class="btn btn-success"
+						type="submit"
+						id="newCodeButton"
+					>
+						Generate new code
+					</button>
+					<br>
+					<div class="form-group">
+						<input
+							type="text"
+							placeholder="Enter Game Code"
+							id="gameCodeInput"
+						>
+					</div>
+					<button
+						class="btn btn-success"
+						type="submit"
+						id="joinGameButton"
+					>
+						Join to Game
+					</button>
+					<br>
+				</div>
+			</div>
+			<div id="roomInfo">
+				<div class="d-flex flex-column align-items-center justify-content-center h-100">
+					<h3>This is your code:
+						<b>
+							<span id="codeGenerated"></span>
+						</b>
+					</h3>
+					<h3>Enter this code and shared it with someone else, and enjoy the game.</h3>
+				</br>
+					<h4>Good luck!</h4>
+				</div>
+			</div>
+			<div id='roomFull' >
+				<div  class="d-flex flex-column align-items-center justify-content-center h-100">
+					<h1>The room is already full</h1>
+					<br>
+					<button
+						class="btn btn-success"
+						type="submit"
+						id="lobbyButton"
+					>
+						Go to lobby
+					</button>
+				</div>
+			</div>
+			<div id="gameScreen" class="h-100"></div>
+		</section>
+		<div id="me">
+			<h6>Made with 💜 by
+				<a style="text-decoration: none; color: #42a846;"
+					href="https://github.com/juansacok"
+					target="_blank"
+					rel="noopener noreferrer"
+					title="@juansacok"
+				>Juan Sebastián Agudelo | @juansacok</a>
+			</h6>
+		</div>
     </body>
 </html>
