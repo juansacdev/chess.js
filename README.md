@@ -21,11 +21,13 @@
 
 
 ### 📸 Screenshots
-
-![image](https://user-images.githubusercontent.com/66572419/117623556-8fdfe780-b139-11eb-8a25-7d9e3a95f3c7.png)
-![image](https://user-images.githubusercontent.com/66572419/117623854-e64d2600-b139-11eb-825f-a188d752e900.png)
-![image](https://user-images.githubusercontent.com/66572419/117624170-3d52fb00-b13a-11eb-8403-b67914cdc3e3.png)
-***
+<details open>
+<summary>Images</summary>
+  
+  ![image](https://user-images.githubusercontent.com/66572419/117623556-8fdfe780-b139-11eb-8a25-7d9e3a95f3c7.png)</br>
+  ![image](https://user-images.githubusercontent.com/66572419/117623854-e64d2600-b139-11eb-825f-a188d752e900.png)</br>
+  ![image](https://user-images.githubusercontent.com/66572419/117624170-3d52fb00-b13a-11eb-8403-b67914cdc3e3.png)</br>
+</details>
 
 ### 🌱 Technical Skills
 
@@ -35,7 +37,7 @@ I improve a lot:
 * Programmation logic
 * Sockets handling
 * OOP in JS
-***
+
 
 ## Install
 
