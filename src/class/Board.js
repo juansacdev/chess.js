@@ -1,6 +1,6 @@
 import Cell from './Cell'
-import { cellSelectedTheme, pieceTheme } from '../utils/theme'
-import { pieceTypes } from '../utils/piecesType'
+import { cellSelectedTheme, pieceTheme } from '../utils/config'
+import { pieceTypes } from '../utils/config'
 import socket from '../helpers/sockets'
 
 class Board {
@@ -36,7 +36,8 @@ class Board {
         this.canvas.width = this.width;
         this.canvas.height = this.height;
 
-        document.body.appendChild(this.canvas);
+		this.div = document.getElementById('gameScreen')
+        this.div.appendChild(this.canvas);
         document.body.style.display = 'grid'
         document.body.style.placeItems = 'center'
         document.body.style.height = '99vh'

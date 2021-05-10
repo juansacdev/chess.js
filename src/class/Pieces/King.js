@@ -1,5 +1,5 @@
 import Piece from "../Piece";
-import { pieceTypes } from '../../utils/piecesType'
+import { pieceTypes } from '../../utils/config'
 
 class King extends Piece {
     constructor(color) {

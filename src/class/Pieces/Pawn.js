@@ -1,6 +1,6 @@
 import Piece from "../Piece";
-import { pieceTheme } from '../../utils/theme'
-import { pieceTypes } from '../../utils/piecesType'
+import { pieceTheme } from '../../utils/config'
+import { pieceTypes } from '../../utils/config'
 
 class Pawn extends Piece {
     constructor(color) {
