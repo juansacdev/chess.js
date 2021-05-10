@@ -17,7 +17,25 @@
 
 > An wonderfull chess game. Built with js vanilla and web sockets :)
 
-### 🏠 [Homepage](https://github.com/juansacok/chess.js#readme)
+## 🏠 [Homepage](https://github.com/juansacok/chess.js#readme)
+
+
+### 📸 Screenshots
+
+![image](https://user-images.githubusercontent.com/66572419/117623556-8fdfe780-b139-11eb-8a25-7d9e3a95f3c7.png)
+![image](https://user-images.githubusercontent.com/66572419/117623854-e64d2600-b139-11eb-825f-a188d752e900.png)
+![image](https://user-images.githubusercontent.com/66572419/117624170-3d52fb00-b13a-11eb-8403-b67914cdc3e3.png)
+***
+
+### 🌱 Technical Skills
+
+I improve a lot:
+
+* Operations with two-dimensional matrices - (Array2D)
+* Programmation logic
+* Sockets handling
+* OOP in JS
+***
 
 ## Install
 
@@ -25,22 +43,17 @@
 npm install
 ```
 
-## Usage dev
+## Run on dev mode
 
 ```sh
 npm start
 ```
 
-## Usage productio
+## Run on production
 
 ```sh
 npm build
 ```
-
-## How to use
-Para unirse o crear una sala solo debes de escribir en la url un Query Param pasandole un id.
-> /?room=${id}
-
 
 ## Author
 
@@ -65,4 +78,6 @@ Copyright © 2021 [Juan Sebastián Agudelo @juansacok <juansac.me@gmail.com>](ht
 This project is [MIT](https://github.com/juansacok/chess.js/blob/master/LICENSE) licensed.
 
 ***
-_Make with ❤️_
+_Made with ❤️_
+
+
