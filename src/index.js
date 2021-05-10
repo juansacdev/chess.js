@@ -1,21 +1,23 @@
-import Board from './class/Board'
-import Pawn from './class/Pieces/Pawn';
-import Rook from './class/Pieces/Rook';
-import Knight from './class/Pieces/Knight';
-import Bishop from './class/Pieces/Bishop';
-import Queen from './class/Pieces/Queen';
-import King from './class/Pieces/King';
-import { pieceTypes } from './utils/piecesType'
-import { theme, pieceTheme } from './utils/theme'
+import ChessBoard from './class/Board'
+import PawnPiece from './class/Pieces/Pawn';
+import RookPiece from './class/Pieces/Rook';
+import KnightPiece from './class/Pieces/Knight';
+import BishopPiece from './class/Pieces/Bishop';
+import QueenPiece from './class/Pieces/Queen';
+import KingPiece from './class/Pieces/King';
+import { pieceTypes } from './utils/config'
+import { theme, pieceTheme } from './utils/config'
+import { boardSettings } from './utils/config'
 import socket from './helpers/sockets'
 
-const COLUMNS = 8;
-const FILES = 8;
-
-const WIDTH = 800;
-const HEIGHT = 800;
-
-const board = new Board (WIDTH, HEIGHT, COLUMNS, FILES, theme, pieceTheme)
+const board = new ChessBoard(
+	boardSettings.WIDTH,
+	boardSettings.HEIGHT,
+	boardSettings.COLUMNS,
+	boardSettings.FILES,
+	theme,
+	pieceTheme,
+)
 
 socket.on('init board', (serverPeices) => {
 	serverPeices.forEach((file, y) => {
@@ -24,12 +26,12 @@ socket.on('init board', (serverPeices) => {
 			const [colorType, pieceType = ''] = currentPiece.split('')
 			const color = colorType === 'b' ? pieceTheme.pieceDark : pieceTheme.pieceLight
 			let piece
-			if (pieceType === pieceTypes.pawn) piece = new Pawn(color)
-			if (pieceType === pieceTypes.rook) piece = new Rook(color)
-			if (pieceType === pieceTypes.king) piece = new King(color)
-			if (pieceType === pieceTypes.queen) piece = new Queen(color)
-			if (pieceType === pieceTypes.knight) piece = new Knight(color)
-			if (pieceType === pieceTypes.bishop) piece = new Bishop(color)
+			if (pieceType === pieceTypes.pawn) piece = new PawnPiece(color)
+			if (pieceType === pieceTypes.rook) piece = new RookPiece(color)
+			if (pieceType === pieceTypes.king) piece = new KingPiece(color)
+			if (pieceType === pieceTypes.queen) piece = new QueenPiece(color)
+			if (pieceType === pieceTypes.knight) piece = new KnightPiece(color)
+			if (pieceType === pieceTypes.bishop) piece = new BishopPiece(color)
 
 			board.initPlacePiece(x, y, piece)
 		})
